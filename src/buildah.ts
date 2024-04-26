@@ -27,7 +27,7 @@ interface Buildah {
     from(baseImage: string, tlsVerify: boolean, extraArgs: string[]): Promise<CommandResult>;
     config(container: string, setting: BuildahConfigSettings): Promise<CommandResult>;
     copy(container: string, contentToCopy: string[]): Promise<CommandResult | undefined>;
-    commit(container: string, newImageName: string, useOCI: boolean): Promise<CommandResult>;
+    commit(container: string, newImageName: string, useOCI: boolean, squash: boolean): Promise<CommandResult>;
     manifestCreate(manifest: string): Promise<void>;
     manifestAdd(manifest: string, imageName: string, tags: string[]): Promise<void>;
 }
@@ -178,14 +178,15 @@ export class BuildahCli implements Buildah {
         return this.execute(args);
     }
 
-    async commit(container: string, newImageName: string, useOCI: boolean): Promise<CommandResult> {
+    async commit(container: string, newImageName: string, useOCI: boolean, squash: boolean): Promise<CommandResult> {
         core.debug("commit");
         core.debug(container);
         core.debug(newImageName);
-        const args: string[] = [
-            "commit", ...BuildahCli.getImageFormatOption(useOCI),
-            "--squash", container, newImageName,
-        ];
+        const args: string[] = [ "commit", ...BuildahCli.getImageFormatOption(useOCI) ];
+        if (squash) {
+            args.push("--squash");
+        }
+        args.push(container, newImageName);
         return this.execute(args);
     }
 
