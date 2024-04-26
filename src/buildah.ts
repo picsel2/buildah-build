@@ -146,7 +146,7 @@ export class BuildahCli implements Buildah {
         core.debug("config");
         core.debug(container);
         const args: string[] = [ "config" ];
-        if (settings.entrypoint) {
+        if (settings.entrypoint && settings.entrypoint.length > 0) {
             args.push("--entrypoint");
             args.push(BuildahCli.convertArrayToStringArg(settings.entrypoint));
         }
