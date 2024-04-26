@@ -113,6 +113,12 @@ export enum Inputs {
      */
     PORT = "port",
     /**
+     * Set to true to squash the image layers.
+     * Required: false
+     * Default: "true"
+     */
+    SQUASH = "squash",
+    /**
      * The tags of the image to build. For multiple tags, seperate by whitespace. For example, "latest v1".
      * Required: false
      * Default: "latest"

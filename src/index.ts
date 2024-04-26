@@ -266,6 +266,7 @@ async function doBuildFromScratch(
     const workingDir = core.getInput(Inputs.WORKDIR);
     const envs = getInputList(Inputs.ENVS);
     const tlsVerify = core.getInput(Inputs.TLS_VERIFY) === "true";
+    const squash = core.getInput(Inputs.SQUASH) === "true";
 
     const container = await cli.from(baseImage, tlsVerify, extraArgs);
     const containerId = container.output.replace("\n", "");
@@ -287,7 +288,7 @@ async function doBuildFromScratch(
             };
             await cli.config(containerId, newImageConfig);
             await cli.copy(containerId, content);
-            await cli.commit(containerId, `${newImage}${tagSuffix}`, useOCI);
+            await cli.commit(containerId, `${newImage}${tagSuffix}`, useOCI, squash);
             builtImage.push(`${newImage}${tagSuffix}`);
         }
     }
@@ -301,7 +302,7 @@ async function doBuildFromScratch(
         };
         await cli.config(containerId, newImageConfig);
         await cli.copy(containerId, content);
-        await cli.commit(containerId, newImage, useOCI);
+        await cli.commit(containerId, newImage, useOCI, squash);
         builtImage.push(newImage);
     }
 
